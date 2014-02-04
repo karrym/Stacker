@@ -37,7 +37,7 @@ muls = (*) <$> pop <*> pop
 divs :: StateT Stack IO Int
 divs = flip div <$> pop <*> pop
 
--- evalulate input code
+-- evaluate input code
 eval :: String → StateT Stack IO ()
 eval "+" = adds >>= push
 eval "-" = mins >>= push
@@ -45,7 +45,7 @@ eval "*" = muls >>= push
 eval "/" = divs >>= push
 eval ns  = push . read $ ns
 
--- evalulate input code
+-- evaluate input code
 repl :: String → StateT Stack IO ()
 repl = foldr (\x y -> eval x >> y) (return ()) . words
 
@@ -57,7 +57,7 @@ while p x f = do
             else return ()
 
 
--- evalute and print stack
+-- evaluate and print stack
 runRepl :: String → StateT Stack IO () 
 runRepl code = do
         repl code
