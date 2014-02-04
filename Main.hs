@@ -6,6 +6,7 @@ module Main where
 import Control.Monad.Trans.State
 import Control.Applicative
 import Control.Monad.IO.Class
+import System.IO
 import Nat
 
 data Val = Int { fromInt :: Int }
@@ -146,12 +147,16 @@ runRepl code = do
         liftIO $ mapM_ print stack
 
 calculator :: StateT Stack IO ()        
-calculator = while (/= "quit") (putStrT ">> " >> getLineT) runRepl
+calculator = while (/= "quit") (readCodeT ">> ") runRepl
 
-putStrT :: MonadIO m => String → m ()
-putStrT = liftIO . putStr
-getLineT :: MonadIO m => m String
-getLineT = liftIO getLine
+flushStr :: String → IO ()
+flushStr str = putStr str >> hFlush stdout
+
+readCode :: String → IO String
+readCode str = flushStr str >> getLine
+
+readCodeT :: MonadIO m => String → m String
+readCodeT = liftIO . readCode
 
 main :: IO ()
 main = runStateT calculator [] >> return ()
