@@ -95,6 +95,12 @@ greate = (\x y → Bool $ fromInt y >= fromInt x) <$> pop <*> pop
 swap :: (Functor m, Monad m) => StateT [a] m ()
 swap = pops 2 >>= pushs . reverse
 
+sums :: (Functor m, Monad m) => StateT Stack m Val
+sums = (Int . sum . map fromInt) <$> get
+
+products :: (Functor m, Monad m) => StateT Stack m Val
+products = (Int . product . map fromInt) <$> get
+
 -- evalulate input code
 eval :: (Functor m, Monad m) => String → StateT Stack m ()
 eval "+"    = adds >>= push
@@ -112,6 +118,11 @@ eval "not"  = nots >>= push
 eval "&&"   = ands >>= push
 eval "||"   = ors >>= push
 eval "swap" = swap
+eval "pop"  = pop >> return ()
+eval "sum" = sums >>= put . (:[])
+eval "product" = products >>= put . (:[])
+eval "sum'"  = sums >>= push
+eval "product'" = products >>= push
 eval "True" = push . Bool $ True
 eval "False" = push . Bool $ False
 eval ns     = push . Int . read $ ns
@@ -144,4 +155,3 @@ getLineT = liftIO getLine
 
 main :: IO ()
 main = runStateT calculator [] >> return ()
-
