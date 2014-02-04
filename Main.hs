@@ -101,7 +101,6 @@ sums = (Int . sum . map fromInt) <$> get
 products :: (Functor m, Monad m) => StateT Stack m Val
 products = (Int . product . map fromInt) <$> get
 
-<<<<<<< HEAD
 -- evalulate input code
 eval :: (Functor m, Monad m) => String → StateT Stack m ()
 eval "+"    = adds >>= push
@@ -130,18 +129,6 @@ eval ns     = push . Int . read $ ns
 
 -- evalulate input code
 repl :: (Functor m, Monad m) => String → StateT Stack m ()
-=======
--- evaluate input code
-eval :: String → StateT Stack IO ()
-eval "+" = adds >>= push
-eval "-" = mins >>= push
-eval "*" = muls >>= push
-eval "/" = divs >>= push
-eval ns  = push . read $ ns
-
--- evaluate input code
-repl :: String → StateT Stack IO ()
->>>>>>> 4e2616c609af10a0e05794b977e0fc308f22ba70
 repl = foldr (\x y -> eval x >> y) (return ()) . words
 
 while :: Monad m => (a → Bool) → m a → (a → m ()) → m ()
@@ -151,12 +138,7 @@ while p x f = do
             then f code >> while p x f
             else return ()
 
-<<<<<<< HEAD
 -- evalute and print stack
-=======
-
--- evaluate and print stack
->>>>>>> 4e2616c609af10a0e05794b977e0fc308f22ba70
 runRepl :: String → StateT Stack IO () 
 runRepl code = do
         repl code
