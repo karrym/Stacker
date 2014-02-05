@@ -7,6 +7,7 @@ import Control.Monad.Trans.State
 import Control.Applicative
 import Control.Monad.IO.Class
 import System.IO
+import Data.List
 import Nat
 
 data Val = Int { fromInt :: Int }
@@ -144,7 +145,8 @@ runRepl :: String → StateT Stack IO ()
 runRepl code = do
         repl code
         stack ←  get
-        liftIO $ mapM_ print stack
+        let list = zipWith4 (\x y w z → x ++ y ++ w ++ z) (repeat "[") (map show $ iterate succ 1) (repeat "]  ") (map show stack)
+        liftIO $ mapM_ putStrLn list
 
 calculator :: StateT Stack IO ()        
 calculator = while (/= "quit") (readCodeT ">> ") runRepl
