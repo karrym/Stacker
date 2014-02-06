@@ -145,7 +145,7 @@ eval ns     = push . Int . read $ ns
 
 -- evalulate input code
 repl :: (Functor m, Monad m) => String → StateT Stack m ()
-repl = foldr (\x y -> eval x >> y) (return ()) . words
+repl = foldr (\x y → eval x >> y) (return ()) . words
 
 -- second argument and first argument apply to third argument while first argument return true
 while :: Monad m => (a → Bool) → m a → (a → m ()) → m ()
@@ -161,6 +161,7 @@ runRepl code = do
         repl code
         stack ←  get
         let list = zipWith4 (\x y w z → x ++ y ++ w ++ z) (repeat "[") (map show $ iterate succ 1) (repeat "]  ") (map show stack)
+        liftIO $ putStrLn "----------"
         liftIO $ mapM_ putStrLn list
 
 calculator :: StateT Stack IO ()        
