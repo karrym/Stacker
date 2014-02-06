@@ -33,10 +33,12 @@ pop = do
         put xs
         return x
 
+-- push list
 pushs :: Monad m => [a] → StateT [a] m ()
 pushs []     = return ()
 pushs (x:xs) = pushs xs >> push x
 
+-- pop some value
 pops :: (Functor m, Monad m) => Nat → StateT [a] m [a]
 pops Z     = return []
 pops (S n) = (:) <$> pop <*> pops n
@@ -61,35 +63,45 @@ divs :: (Functor m, Monad m) => StateT Stack m Val
 divs = div' <$> pop <*> pop where
     div' (Int n) (Int m) = Int $ m `div` n
 
+-- mod two nums of stack
 mods :: (Functor m, Monad m) => StateT Stack m Val
 mods =  mod' <$> pop <*> pop where
     mod' (Int n) (Int m) = Int $ m `mod` n
 
+-- exp two nums of stack
 exps :: (Functor m, Monad m) => StateT Stack m Val
 exps = exp <$> pop <*> pop where
     exp (Int n) (Int m) = Int $ m ^ n
 
+-- if two nums are equal, return True
 equal :: (Functor m, Monad m) => StateT Stack m Val
 equal = (\x y → Bool $ fromInt y == fromInt x) <$> pop <*> pop
 
+-- if top of stack is less than second of stack, return True
 less :: (Functor m, Monad m) => StateT Stack m Val
 less = (\x y → Bool $ fromInt y < fromInt x) <$> pop <*> pop
 
+-- if top of stack is greater than second of stack, return True
 great :: (Functor m, Monad m) => StateT Stack m Val
 great = (\x y → Bool $ fromInt y > fromInt x) <$> pop <*> pop
 
+-- or two boolean of stack
 ors :: (Functor m, Monad m) => StateT Stack m Val
 ors = (\x y → Bool $ fromBool x || fromBool y) <$> pop <*> pop
 
+-- and two boolean of stack
 ands :: (Functor m, Monad m) => StateT Stack m Val
 ands = (\x y → Bool $ fromBool x && fromBool y) <$> pop <*> pop
 
+-- not a boolean of stack
 nots :: (Functor m, Monad m) => StateT Stack m Val
 nots = (Bool . not . fromBool) <$> pop where
 
+-- less or equal
 lesse :: (Functor m, Monad m) => StateT Stack m Val
 lesse = (\x y → Bool $ fromInt y <= fromInt x) <$> pop <*> pop
 
+-- great or equal
 greate :: (Functor m, Monad m) => StateT Stack m Val
 greate = (\x y → Bool $ fromInt y >= fromInt x) <$> pop <*> pop
 
@@ -97,9 +109,11 @@ greate = (\x y → Bool $ fromInt y >= fromInt x) <$> pop <*> pop
 swap :: (Functor m, Monad m) => StateT [a] m ()
 swap = pops 2 >>= pushs . reverse
 
+-- sum all values of stack
 sums :: (Functor m, Monad m) => StateT Stack m Val
 sums = (Int . sum . map fromInt) <$> get
 
+-- product all values of stack
 products :: (Functor m, Monad m) => StateT Stack m Val
 products = (Int . product . map fromInt) <$> get
 
@@ -133,6 +147,7 @@ eval ns     = push . Int . read $ ns
 repl :: (Functor m, Monad m) => String → StateT Stack m ()
 repl = foldr (\x y -> eval x >> y) (return ()) . words
 
+-- second argument and first argument apply to third argument while first argument return true
 while :: Monad m => (a → Bool) → m a → (a → m ()) → m ()
 while p x f = do
         code <- x
