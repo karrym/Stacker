@@ -11,7 +11,7 @@ instance Enum Nat where
         succ = S
         pred Z = Z
         pred (S n) = n
-        toEnum n | n <= 0 = 0
+        toEnum n | n <= 0 = Z
                  | otherwise = S $ toEnum $ n - 1
         fromEnum Z = 0
         fromEnum (S n) = 1 + fromEnum n
